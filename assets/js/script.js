@@ -1,5 +1,5 @@
 var searchInputEl = document.getElementById("search-word");
-var apiKey = "c9e07c1e829ea4092afdcc9b70a32569";
+var apiKey = "";
 var currentStateContainerEl = document.getElementById("current-state");
 var searchFormEl = document.getElementById("search-form");
 
