@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css" integrity="sha512-HqxHUkJM0SYcbvxUw5P60SzdOTy/QVwA1JJrvaXJv4q7lmbDZCmZaqz01UPOaQveoxfYRv1tHozWGPMcuTBuvQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./assets/styles/style.css" />
     <title>Nickless Weather Radar</title>
 </head>
 <body>
@@ -16,15 +17,17 @@
         <div id="seach-area" class="column is-one-fifth ml-4">
             <div id="search-form">
                 <h2 class="subtitle has-text-weight-bold mb-4">Search for a City:</h2>
-                <input type="text" class="input mb-4" placeholder="Ex. Santo Domingo" id="search-word"></input>
-                <button type="submit" id="search-btn" class="button is-info is-fullwidth">Search</button>
+                <form>
+                    <input type="text" class="input mb-4" placeholder="Ex. Santo Domingo" id="search-word"></input>
+                    <button type="submit" id="search-btn" class="button is-info is-fullwidth my-4">Search</button>
+                </form>
             </div>
             <div id="search-history"></div>
         </div>
         <div id="weather-results" class="column is-four-fifths">
-            <div id="current-state">
+            <div id="current-state" class="mb-4">
             </div>
-            <div id="forecast"></div>
+            <div id="forecast" class="mr-4"></div>
         </div>
     </main>
     <script src="./assets/js/script.js"></script>

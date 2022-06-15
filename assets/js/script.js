@@ -1,7 +1,10 @@
 var searchInputEl = document.getElementById("search-word");
-var apiKey = "";
+var apiKey = "c9e07c1e829ea4092afdcc9b70a32569";
 var currentStateContainerEl = document.getElementById("current-state");
 var searchFormEl = document.getElementById("search-form");
+var searchHistoryContainer = document.getElementById("search-history");
+var searchHistory = [];
+var loadingHistory = false;
 
 
 // for testing
@@ -9,12 +12,28 @@ var cityTest = "Santo Domingo";
 //
 // icon url http://openweathermap.org/img/wn/10d@2x.png
 
-var loadWeather = function (weatherInfo, cityName, country) {
-    console.log(weatherInfo, cityName, country);
+var assignUVbg = function (uvIndexEl) {
+    uvIndexEl.classList = ""
+
+    console.dir(uvIndexEl);
+
+    if (uvIndexEl.textContent < 2) {
+        uvIndexEl.classList = "has-background-success";
+    } else if (uvIndexEl.textContent >= 2 && uvIndexEl.textContent < 5) {
+        uvIndexEl.classList = "has-background-warning";
+    } else if (uvIndexEl.textContent >= 5 && uvIndexEl.textContent < 7) {
+        uvIndexEl.classList = "has-background-orange";
+    } else {
+        uvIndexEl.classList = "has-background-danger";
+    }
+}
+
+var loadWeather = function (weatherInfo, cityName, state, country) {
+    // console.log(weatherInfo, cityName, country);
     currentStateContainerEl.textContent = "";
     var cityTitle = document.createElement("h2");
     cityTitle.classList = "subtitle is-3";
-    cityTitle.textContent = `${cityName}, ${country}`;
+    cityTitle.textContent = `${cityName}, ${state}, ${country}`;
 
     // var currTempEl = document.createElement("p");
     // currTempEl.textContent = `Temperature: ${weatherInfo.currTemp} deg C`;
@@ -23,10 +42,10 @@ var loadWeather = function (weatherInfo, cityName, country) {
     currWeather.innerHTML = `Temperature: ${weatherInfo.currTemp} \u00B0 C <br />
                                 Pressure: ${weatherInfo.currPressure} Pa <br />
                                 Humidity: ${weatherInfo.currHumidity} % <br />
-                                UV Index: <span id="uv-index">${weatherInfo.currUVIndex}</span> <br />
+                                UV Index: <span id="uv-index" class="px-2">${weatherInfo.currUVIndex}</span> <br />
                                 Wind speed: ${weatherInfo.currWind} kph`
 
-
+    // assignUVbg(document.getElementById("uv-index"));
 
     currentStateContainerEl.append(cityTitle, currWeather);
     var forecastContainer = document.getElementById("forecast");
@@ -34,6 +53,8 @@ var loadWeather = function (weatherInfo, cityName, country) {
     
     var cardContainer = document.createElement("div");
     cardContainer.classList = "columns";
+
+    assignUVbg(document.getElementById("uv-index"));
 
     for (var i = 0; i < weatherInfo.fiveDayForecast.length; i++) {
         var weatherCard = document.createElement("div");
@@ -50,7 +71,7 @@ var loadWeather = function (weatherInfo, cityName, country) {
                                         Min Temp: ${weatherInfo.fiveDayForecast[i].minTemp} \u00B0 C <br />
                                         Pressure: ${weatherInfo.fiveDayForecast[i].pressure} Pa <br />
                                         Humidity: ${weatherInfo.fiveDayForecast[i].humidity} % <br />
-                                        UV Index: <span id="uv-index-${i}">${weatherInfo.fiveDayForecast[i].UVindex}</span> <br />
+                                        UV Index: <span id="uv-index-${i}" class="px-2">${weatherInfo.fiveDayForecast[i].UVindex}</span> <br />
                                         Wind speed: ${weatherInfo.fiveDayForecast[i].windSpeed} kph`
 
         weatherCard.appendChild(forecastWeather);
@@ -59,21 +80,24 @@ var loadWeather = function (weatherInfo, cityName, country) {
         forecastContainer.appendChild(cardContainer);
 
         var uvIndexEl = document.getElementById("uv-index-"+i);
-        uvIndexEl.classList = ""
 
-        if (weatherInfo.fiveDayForecast[i].UVindex < 2) {
-            uvIndexEl.classList = "has-background-success";
-        } else if (weatherInfo.fiveDayForecast[i].UVindex >= 2 && weatherInfo.fiveDayForecast[i].UVindex < 5) {
-            uvIndexEl.classList = "has-background-warning";
-        } else if (weatherInfo.fiveDayForecast[i].UVindex >= 5 && weatherInfo.fiveDayForecast[i].UVindex < 7) {
-            uvIndexEl.classList = "has-background-info";
-        } else {
-            uvIndexEl.classList = "has-background-danger";
-        }
+        assignUVbg(uvIndexEl);
+
+        // uvIndexEl.classList = ""
+
+        // if (weatherInfo.fiveDayForecast[i].UVindex < 2) {
+        //     uvIndexEl.classList = "has-background-success";
+        // } else if (weatherInfo.fiveDayForecast[i].UVindex >= 2 && weatherInfo.fiveDayForecast[i].UVindex < 5) {
+        //     uvIndexEl.classList = "has-background-warning";
+        // } else if (weatherInfo.fiveDayForecast[i].UVindex >= 5 && weatherInfo.fiveDayForecast[i].UVindex < 7) {
+        //     uvIndexEl.classList = "has-background-info";
+        // } else {
+        //     uvIndexEl.classList = "has-background-danger";
+        // }
     }
 }
 
-var getWeather = function (lat, lon, cityName, country) {
+var getWeather = function (lat, lon, cityName, state, country) {
     var apiUrl = "https://api.openweathermap.org/data/2.5/onecall?lat="+ lat +"&lon="+ lon +"&units=metric&appid=" + apiKey;
     // console.log(apiUrl);
     fetch(apiUrl).then( function (response) {
@@ -110,9 +134,26 @@ var getWeather = function (lat, lon, cityName, country) {
                 weatherInfo.fiveDayForecast.push(dailyForecast);
             }
             // console.log(weatherInfo);
-            loadWeather(weatherInfo, cityName, country);
+            loadWeather(weatherInfo, cityName, state, country);
         })
     })
+}
+
+var saveSearch = function() {
+    localStorage.setItem("weather-search-history", JSON.stringify(searchHistory));
+}
+
+var loadSearch = function() {
+    searchHistory = JSON.parse(localStorage.getItem("weather-search-history"));
+
+    if(!searchHistory) {
+        searchHistory = [];
+    } else {
+        for (var i = 0; i < searchHistory.length; i++) {
+            setHistory(searchHistory[i]);
+        }
+    }
+
 }
 
 var getLatLon = function (searchWord) {
@@ -121,15 +162,39 @@ var getLatLon = function (searchWord) {
     // console.log(apiUrl);
     
     fetch(apiUrl).then(function(response) {
-        response.json().then(function(data) {
-            console.log(data);
-            var lat = data[0].lat;
-            var lon = data[0].lon;
-            var cityName = data[0].name;
-            var country = data[0].country;
-            // lon = Math.round(lon*100)/100;
-            getWeather(lat, lon, cityName, country);
-        })
+        // console.log(response);
+        if (response.ok) {
+            response.json().then(function(data) {
+
+                // console.log(data, data.length);
+                if (data.length !== 0) {
+
+                    var lat = data[0].lat;
+                    var lon = data[0].lon;
+                    var cityName = data[0].name;
+                    var country = data[0].country;
+                    var state = data[0].state;
+                    // console(lat, lon);
+                    getWeather(lat, lon, cityName, state, country);
+                    
+                    
+                    // if we're not doing a load from history, update the search history
+                    if (!loadingHistory) {
+                        setHistory(cityName);
+                        // push cityName to searchHistory array
+                        searchHistory.push(cityName);
+                        saveSearch();
+                    } else {
+                        loadingHistory = false;
+                    }
+                } else {
+                    alert("Could not retrieve the city information. Please check for spelling and try again.");
+                }
+            })
+
+        } else {
+            alert("Error: please try again.");
+        }
     })
 }
 
@@ -139,11 +204,21 @@ var getLatLon = function (searchWord) {
 
 // getLatLon(cityTest);
 
+var setHistory = function(cityName) {
+    var historyBtn = document.createElement("button");
+    historyBtn.textContent = cityName;
+    historyBtn.classList = "button is-light is-fullwidth my-4"
+
+    searchHistoryContainer.appendChild(historyBtn);    
+}
+
 var retrieveCityName = function(event) {
     event.preventDefault();
     if (event.target.id === "search-btn") {
         var cityName = searchInputEl.value.trim();
         if (cityName) {
+            // setHistory(cityName);
+            searchInputEl.value = "";
             getLatLon(cityName);
         } else {
             alert("Input cannot be empty");
@@ -151,4 +226,19 @@ var retrieveCityName = function(event) {
     }
 }
 
+var loadFromHistory = function(event) {
+    // console.dir(event.target);
+    if (event.target.localName === "button") {
+        console.log("button was pressed");
+        loadingHistory = true;
+        getLatLon(event.target.textContent);
+    }
+}
+
 searchFormEl.addEventListener("click", retrieveCityName);
+
+// add event listener to searchHistory container and use the text of the button and call getLatLon function
+searchHistoryContainer.addEventListener("click", loadFromHistory);
+
+// load from localStorage on page load
+loadSearch();
