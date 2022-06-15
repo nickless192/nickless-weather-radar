@@ -1,5 +1,5 @@
 var searchInputEl = document.getElementById("search-word");
-var apiKey = "c9e07c1e829ea4092afdcc9b70a32569";
+var apiKey = "";
 // for testing
 var cityTest = "Santo Domingo";
 //
