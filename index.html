@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css" integrity="sha512-HqxHUkJM0SYcbvxUw5P60SzdOTy/QVwA1JJrvaXJv4q7lmbDZCmZaqz01UPOaQveoxfYRv1tHozWGPMcuTBuvQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Nickless Weather Radar</title>
+</head>
+<body>
+    <header>
+        <h1 class="title is-1 mb-4 has-text-centered has-text-weight-bold">Nickless Weather Radar</h1>
+    </header>
+
+    <main class="columns">
+        <div id="seach-area" class="column is-one-third ml-4">
+            <div id="search-form">
+                <h2 class="subtitle has-text-weight-bold mb-4">Search for a City:</h2>
+                <input type="text" class="input mb-4" placeholder="Ex. Santo Domingo" id="search-word"></input>
+                <button type="submit" id="search-btn is-info" class="button is-info is-fullwidth">Search</button>
+            </div>
+            <div id="search-history"></div>
+        </div>
+        <div id="weather-results" class="column is-two-thirds">
+            <div id="current-state">
+                <h2 class="subtitle is-3">Santo Domingo</h2>
+            </div>
+            <div id="forecast"></div>
+        </div>
+    </main>
+    <script src="./assets/js/script.js"></script>
+</body>
+</html>
