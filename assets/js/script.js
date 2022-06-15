@@ -31,6 +31,7 @@ var assignUVbg = function (uvIndexEl) {
 var loadWeather = function (weatherInfo, cityName, state, country) {
     // console.log(weatherInfo, cityName, country);
     currentStateContainerEl.textContent = "";
+    currentStateContainerEl.classList = "borders"
     var cityTitle = document.createElement("h2");
     cityTitle.classList = "subtitle is-3";
     cityTitle.textContent = `${cityName}, ${state}, ${country}`;
@@ -157,7 +158,7 @@ var loadSearch = function() {
 }
 
 var getLatLon = function (searchWord) {
-    var apiUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + searchWord.replace(" ", "+") + "&limit=5&appid=" + apiKey;
+    var apiUrl = "https://api.openweathermap.org/geo/1.0/direct?q=" + searchWord.replace(" ", "+") + "&limit=5&appid=" + apiKey;
     
     // console.log(apiUrl);
     

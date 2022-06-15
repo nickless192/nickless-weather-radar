@@ -1,3 +1,11 @@
 .has-background-orange {
     background-color: orange;
 }
+
+form {
+    border-bottom: 2px grey solid;
+}
+
+.borders {
+    border: 2px grey solid;
+}
