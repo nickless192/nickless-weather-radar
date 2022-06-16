@@ -32,9 +32,9 @@ var loadWeather = function (weatherInfo, cityName, state, country) {
     cityTitle.classList = "subtitle is-3";
     // if state is not defined for the city, dont add it
     if (state === undefined) {
-        cityTitle.innerHTML = `${cityName}, ${country} <img src="http://openweathermap.org/img/wn/${weatherInfo.currConditionIcon}.png">`;
+        cityTitle.innerHTML = `${cityName}, ${country} <img src="https://openweathermap.org/img/wn/${weatherInfo.currConditionIcon}.png">`;
     } else {
-        cityTitle.innerHTML = `${cityName}, ${state}, ${country} <img src="http://openweathermap.org/img/wn/${weatherInfo.currConditionIcon}.png">`;
+        cityTitle.innerHTML = `${cityName}, ${state}, ${country} <img src="https://openweathermap.org/img/wn/${weatherInfo.currConditionIcon}.png">`;
     }
 
     // create p element and add all current weather conditions
