@@ -12,7 +12,7 @@ The site will display the following information for the user:
 * Wind speed
 * Weather condition
 
-Data will persist if the page is reloaded, with a button added to clear search history both from the page and from local storage.
+Data will persist if the page is reloaded, with a button added to clear search history both from the page and from local storage. Clicking on a city listed in search history will pull the weather data for that city, without updating the search history.
 
 ## User Story
 
