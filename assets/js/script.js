@@ -6,23 +6,19 @@ var searchHistoryContainer = document.getElementById("search-history");
 var searchHistory = [];
 var loadingHistory = false;
 
-
-// for testing
-var cityTest = "Santo Domingo";
-//
-// icon url http://openweathermap.org/img/wn/10d@2x.png
-
 var assignUVbg = function (uvIndexEl) {
     uvIndexEl.classList = ""
 
-    // console.dir(uvIndexEl);
-
+    // low UV index
     if (uvIndexEl.textContent < 2) {
         uvIndexEl.classList = "has-background-success has-text-white";
+    // mid UV index
     } else if (uvIndexEl.textContent >= 2 && uvIndexEl.textContent < 5) {
         uvIndexEl.classList = "has-background-warning";
+    // high UV index
     } else if (uvIndexEl.textContent >= 5 && uvIndexEl.textContent < 7) {
         uvIndexEl.classList = "has-background-orange has-text-white";
+    // extreme UV index
     } else {
         uvIndexEl.classList = "has-background-danger has-text-white";
     }
@@ -34,15 +30,14 @@ var loadWeather = function (weatherInfo, cityName, state, country) {
     currentStateContainerEl.classList = "borders"
     var cityTitle = document.createElement("h2");
     cityTitle.classList = "subtitle is-3";
+    // if state is not defined for the city, dont add it
     if (state === undefined) {
         cityTitle.innerHTML = `${cityName}, ${country} <img src="http://openweathermap.org/img/wn/${weatherInfo.currConditionIcon}.png">`;
     } else {
         cityTitle.innerHTML = `${cityName}, ${state}, ${country} <img src="http://openweathermap.org/img/wn/${weatherInfo.currConditionIcon}.png">`;
     }
 
-    // var currTempEl = document.createElement("p");
-    // currTempEl.textContent = `Temperature: ${weatherInfo.currTemp} deg C`;
-
+    // create p element and add all current weather conditions
     var currWeather = document.createElement("p");
     currWeather.innerHTML = `Temperature: ${weatherInfo.currTemp} \u00B0 C <br />
                                 Condition: ${weatherInfo.currCondition} <br />
@@ -58,9 +53,11 @@ var loadWeather = function (weatherInfo, cityName, state, country) {
     
     var cardContainer = document.createElement("div");
     cardContainer.classList = "columns";
+
     // assign background color to uv index
     assignUVbg(document.getElementById("uv-index"));
 
+    // loop through 5 days of forecard and add to their invididual cards
     for (var i = 0; i < weatherInfo.fiveDayForecast.length; i++) {
         var weatherCard = document.createElement("div");
         weatherCard.classList = "card column";
@@ -86,6 +83,7 @@ var loadWeather = function (weatherInfo, cityName, state, country) {
         forecastContainer.appendChild(cardContainer);
 
         var uvIndexEl = document.getElementById("uv-index-"+i);
+
         // assign background color to uv index
         assignUVbg(uvIndexEl);
 
@@ -99,6 +97,7 @@ var getWeather = function (lat, lon, cityName, state, country) {
         response.json().then( function (data) {
             // console.log(data);
 
+            // set up weatherInfo object with data from API for current forecast
             var weatherInfo = {
                 sunriseTime: data.current.sunrise,
                 sunsetTime: data.current.sunset,
@@ -113,6 +112,7 @@ var getWeather = function (lat, lon, cityName, state, country) {
                 ]
             }
 
+            // set up weatherInfo object with data from API for 5-day forecast
             for (var i = 0; i < 5; i++) {
                 var dailyForecast = {};
 
@@ -133,15 +133,17 @@ var getWeather = function (lat, lon, cityName, state, country) {
         })
     })
 }
-
+// save to local storage
 var saveSearch = function() {
     localStorage.setItem("weather-search-history", JSON.stringify(searchHistory));
 }
 
+// load from local storage
 var loadSearch = function() {
     searchHistory = JSON.parse(localStorage.getItem("weather-search-history"));
 
     if(!searchHistory) {
+        // if searchHistory doesnt exist in localStorage, create it
         searchHistory = [];
     } else {
         for (var i = 0; i < searchHistory.length; i++) {
@@ -152,6 +154,7 @@ var loadSearch = function() {
 }
 
 var getLatLon = function (searchWord) {
+    // set apiURL for API call to get latitude and longitude from city name
     var apiUrl = "https://api.openweathermap.org/geo/1.0/direct?q=" + searchWord.replace(" ", "+") + "&limit=5&appid=" + apiKey;
     
     // console.log(apiUrl);
@@ -186,7 +189,7 @@ var getLatLon = function (searchWord) {
                     alert("Could not retrieve the city information. Please check for spelling and try again.");
                 }
             })
-
+        // error handling
         } else {
             alert("Error: please try again.");
         }
@@ -195,6 +198,7 @@ var getLatLon = function (searchWord) {
 
 
 var setHistory = function(cityName) {
+    // using the cityname, create a button to load to search History container
     var historyBtn = document.createElement("button");
     historyBtn.textContent = cityName;
     historyBtn.classList = "button is-light is-fullwidth my-4"
@@ -203,8 +207,11 @@ var setHistory = function(cityName) {
 }
 
 var clearHistory = function() {
+    // clears searchHistory array
     searchHistory = [];
+    // removes all content from the page
     searchHistoryContainer.textContent = "";
+    // clear the localStorage by saving the empty searchHistory array
     saveSearch();
 
 }
@@ -214,7 +221,6 @@ var retrieveCityName = function(event) {
     if (event.target.id === "search-btn") {
         var cityName = searchInputEl.value.trim();
         if (cityName) {
-            // setHistory(cityName);
             searchInputEl.value = "";
             getLatLon(cityName);
         } else {
@@ -234,6 +240,7 @@ var loadFromHistory = function(event) {
     }
 }
 
+// event listener to capture the Search and Clear History buttons
 searchFormEl.addEventListener("click", retrieveCityName);
 
 // add event listener to searchHistory container and use the text of the button and call getLatLon function
