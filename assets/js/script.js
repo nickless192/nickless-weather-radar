@@ -15,16 +15,16 @@ var cityTest = "Santo Domingo";
 var assignUVbg = function (uvIndexEl) {
     uvIndexEl.classList = ""
 
-    console.dir(uvIndexEl);
+    // console.dir(uvIndexEl);
 
     if (uvIndexEl.textContent < 2) {
-        uvIndexEl.classList = "has-background-success";
+        uvIndexEl.classList = "has-background-success has-text-white";
     } else if (uvIndexEl.textContent >= 2 && uvIndexEl.textContent < 5) {
         uvIndexEl.classList = "has-background-warning";
     } else if (uvIndexEl.textContent >= 5 && uvIndexEl.textContent < 7) {
-        uvIndexEl.classList = "has-background-orange";
+        uvIndexEl.classList = "has-background-orange has-text-white";
     } else {
-        uvIndexEl.classList = "has-background-danger";
+        uvIndexEl.classList = "has-background-danger has-text-white";
     }
 }
 
@@ -34,7 +34,11 @@ var loadWeather = function (weatherInfo, cityName, state, country) {
     currentStateContainerEl.classList = "borders"
     var cityTitle = document.createElement("h2");
     cityTitle.classList = "subtitle is-3";
-    cityTitle.textContent = `${cityName}, ${state}, ${country}`;
+    if (state === undefined) {
+        cityTitle.innerHTML = `${cityName}, ${country} <img src="http://openweathermap.org/img/wn/${weatherInfo.currConditionIcon}.png">`;
+    } else {
+        cityTitle.innerHTML = `${cityName}, ${state}, ${country} <img src="http://openweathermap.org/img/wn/${weatherInfo.currConditionIcon}.png">`;
+    }
 
     // var currTempEl = document.createElement("p");
     // currTempEl.textContent = `Temperature: ${weatherInfo.currTemp} deg C`;
@@ -46,7 +50,6 @@ var loadWeather = function (weatherInfo, cityName, state, country) {
                                 UV Index: <span id="uv-index" class="px-2">${weatherInfo.currUVIndex}</span> <br />
                                 Wind speed: ${weatherInfo.currWind} kph`
 
-    // assignUVbg(document.getElementById("uv-index"));
 
     currentStateContainerEl.append(cityTitle, currWeather);
     var forecastContainer = document.getElementById("forecast");
@@ -54,7 +57,7 @@ var loadWeather = function (weatherInfo, cityName, state, country) {
     
     var cardContainer = document.createElement("div");
     cardContainer.classList = "columns";
-
+    // assign background color to uv index
     assignUVbg(document.getElementById("uv-index"));
 
     for (var i = 0; i < weatherInfo.fiveDayForecast.length; i++) {
@@ -63,7 +66,7 @@ var loadWeather = function (weatherInfo, cityName, state, country) {
 
         var cardTitle = document.createElement("h3");
         cardTitle.classList = "title is-4";
-        cardTitle.textContent = weatherInfo.fiveDayForecast[i].date;
+        cardTitle.innerHTML = `${weatherInfo.fiveDayForecast[i].date} <img src="http://openweathermap.org/img/wn/${weatherInfo.fiveDayForecast[i].conditionIcon}.png">`;
 
         weatherCard.appendChild(cardTitle);
 
@@ -81,20 +84,9 @@ var loadWeather = function (weatherInfo, cityName, state, country) {
         forecastContainer.appendChild(cardContainer);
 
         var uvIndexEl = document.getElementById("uv-index-"+i);
-
+        // assign background color to uv index
         assignUVbg(uvIndexEl);
 
-        // uvIndexEl.classList = ""
-
-        // if (weatherInfo.fiveDayForecast[i].UVindex < 2) {
-        //     uvIndexEl.classList = "has-background-success";
-        // } else if (weatherInfo.fiveDayForecast[i].UVindex >= 2 && weatherInfo.fiveDayForecast[i].UVindex < 5) {
-        //     uvIndexEl.classList = "has-background-warning";
-        // } else if (weatherInfo.fiveDayForecast[i].UVindex >= 5 && weatherInfo.fiveDayForecast[i].UVindex < 7) {
-        //     uvIndexEl.classList = "has-background-info";
-        // } else {
-        //     uvIndexEl.classList = "has-background-danger";
-        // }
     }
 }
 
@@ -200,17 +192,19 @@ var getLatLon = function (searchWord) {
 }
 
 
-// for getting coordinates from zip code
-// http://api.openweathermap.org/geo/1.0/zip?zip={zip code},{country code}&appid={API key}
-
-// getLatLon(cityTest);
-
 var setHistory = function(cityName) {
     var historyBtn = document.createElement("button");
     historyBtn.textContent = cityName;
     historyBtn.classList = "button is-light is-fullwidth my-4"
 
     searchHistoryContainer.appendChild(historyBtn);    
+}
+
+var clearHistory = function() {
+    searchHistory = [];
+    searchHistoryContainer.textContent = "";
+    saveSearch();
+
 }
 
 var retrieveCityName = function(event) {
@@ -224,13 +218,15 @@ var retrieveCityName = function(event) {
         } else {
             alert("Input cannot be empty");
         }
+    } else if (event.target.id === "clear-btn") {
+        clearHistory();
     }
 }
 
 var loadFromHistory = function(event) {
     // console.dir(event.target);
     if (event.target.localName === "button") {
-        console.log("button was pressed");
+        // console.log("button was pressed");
         loadingHistory = true;
         getLatLon(event.target.textContent);
     }
