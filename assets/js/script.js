@@ -45,6 +45,7 @@ var loadWeather = function (weatherInfo, cityName, state, country) {
 
     var currWeather = document.createElement("p");
     currWeather.innerHTML = `Temperature: ${weatherInfo.currTemp} \u00B0 C <br />
+                                Condition: ${weatherInfo.currCondition} <br />
                                 Pressure: ${weatherInfo.currPressure} Pa <br />
                                 Humidity: ${weatherInfo.currHumidity} % <br />
                                 UV Index: <span id="uv-index" class="px-2">${weatherInfo.currUVIndex}</span> <br />
@@ -66,13 +67,14 @@ var loadWeather = function (weatherInfo, cityName, state, country) {
 
         var cardTitle = document.createElement("h3");
         cardTitle.classList = "title is-4";
-        cardTitle.innerHTML = `${weatherInfo.fiveDayForecast[i].date} <img src="http://openweathermap.org/img/wn/${weatherInfo.fiveDayForecast[i].conditionIcon}.png">`;
+        cardTitle.innerHTML = `${weatherInfo.fiveDayForecast[i].date} <img src="https://openweathermap.org/img/wn/${weatherInfo.fiveDayForecast[i].conditionIcon}.png">`;
 
         weatherCard.appendChild(cardTitle);
 
         var forecastWeather = document.createElement("p");
-        forecastWeather.innerHTML = `Max Temp: ${weatherInfo.fiveDayForecast[i].maxTemp} \u00B0 C <br />
-                                        Min Temp: ${weatherInfo.fiveDayForecast[i].minTemp} \u00B0 C <br />
+        forecastWeather.innerHTML = `Max Temp: ${weatherInfo.fiveDayForecast[i].maxTemp}\u00B0 C <br />
+                                        Min Temp: ${weatherInfo.fiveDayForecast[i].minTemp}\u00B0 C <br />
+                                        Conditions: ${weatherInfo.fiveDayForecast[i].condition} <br />
                                         Pressure: ${weatherInfo.fiveDayForecast[i].pressure} Pa <br />
                                         Humidity: ${weatherInfo.fiveDayForecast[i].humidity} % <br />
                                         UV Index: <span id="uv-index-${i}" class="px-2">${weatherInfo.fiveDayForecast[i].UVindex}</span> <br />

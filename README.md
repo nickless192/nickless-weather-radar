@@ -1,7 +1,18 @@
 # Nickless Weather Radar
 
 ## Description
+This site will allow you to search for a city name and it will populate the weather information for this city, along with a 5-day forecast of the next five days.
 
+The site will display the following information for the user:
+
+* Temperature (current temperature and the minimum/maximum for the 5-day forecast)
+* Pressure
+* Relative humidity
+* UV index with color-coding to indicate low (green), medium (yellow), high (orange) and extreme (red)
+* Wind speed
+* Weather condition
+
+Data will persist if the page is reloaded, with a button added to clear search history both from the page and from local storage.
 
 ## User Story
 
@@ -26,7 +37,7 @@ THEN I am again presented with current and future conditions for that city<br />
 ## Screenshot of Deployed Site
 
 ### Nickless Quizzer Landing Page
- ![Nickless Weather Radar Page](./assets/images)
+ ![Nickless Weather Radar Page](./assets/images/nickless-weather-radar-screenshot.png)
 
 
 ## Links
